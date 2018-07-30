@@ -7,12 +7,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * @author breaklulz
  */
-class Reader implements Runnable {
+class Writer implements Runnable {
 
 	Selector s;
 	LinkedBlockingQueue<SelectionKey> q;
 
-	Reader(Selector s) {
+	Writer(Selector s) {
 		this.s = s;
 		q = new LinkedBlockingQueue<SelectionKey>();
 	}
@@ -24,7 +24,7 @@ class Reader implements Runnable {
 				SelectionKey k = q.take();
 
 				Client c = (Client) k.attachment();
-				c.read();
+				c.flush();
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}

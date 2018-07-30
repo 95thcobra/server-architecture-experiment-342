@@ -16,6 +16,7 @@ class Bouncer implements Runnable {
 
 	Bouncer(Selector s, SocketAddress la) throws Throwable {
 		this.s = s;
+
 		ssc = ServerSocketChannel.open();
 		ssc.bind(la);
 	}
