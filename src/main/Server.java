@@ -1,26 +1,20 @@
 package main;
 
-import java.nio.channels.SelectionKey;
+import java.net.InetSocketAddress;
 import java.nio.channels.Selector;
-import java.util.HashMap;
 
 /**
  * @author breaklulz
  */
 class Server {
 
-	Selector s;
-	HashMap<SelectionKey, Client> clients;
-
 	Server() throws Throwable {
-		s = Selector.open();
+		Selector s = Selector.open();
 
-		clients = new HashMap<SelectionKey, Client>();
-
-		Reader r = new Reader(s, clients);
+		Reader r = new Reader(s);
 		new Thread(r).start();
 
-		Bouncer b = new Bouncer(s, clients);
+		Bouncer b = new Bouncer(s, new InetSocketAddress("localhost", 1337));
 		new Thread(b).start();
 	}
 

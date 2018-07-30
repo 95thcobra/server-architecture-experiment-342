@@ -2,7 +2,6 @@ package main;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -11,11 +10,9 @@ import java.util.Iterator;
 class Reader implements Runnable {
 
 	Selector s;
-	HashMap<SelectionKey, Client> clients;
 
-	Reader(Selector s, HashMap<SelectionKey, Client> clients) throws Throwable {
+	Reader(Selector s) throws Throwable {
 		this.s = s;
-		this.clients = clients;
 	}
 
 	@Override
@@ -43,7 +40,7 @@ class Reader implements Runnable {
 				SelectionKey k = keys.next();
 				keys.remove();
 
-				Client c = clients.get(k);
+				Client c = (Client) k.attachment();
 				c.read();
 			} catch (Throwable e) {
 				e.printStackTrace();
