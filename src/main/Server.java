@@ -11,7 +11,7 @@ class Server {
 	Server(SocketAddress la) throws Throwable {
 		Selector s = Selector.open();
 
-		new Thread(new Reactor(s, new Reader(s), new Writer(s))).start();
+		new Thread(new Reactor(s, new KeyQer(s), new KeyQer(s))).start();
 		new Thread(new Bouncer(s, la)).start();
 	}
 

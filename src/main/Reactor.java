@@ -1,8 +1,7 @@
 package main;
 
-import java.nio.channels.SelectionKey;
+import java.io.IOException;
 import java.nio.channels.Selector;
-import java.util.Iterator;
 
 /**
  * @author breaklulz
@@ -10,10 +9,9 @@ import java.util.Iterator;
 class Reactor implements Runnable {
 
 	Selector s;
-	Reader r;
-	Writer w;
+	KeyQer r, w;
 
-	Reactor(Selector s, Reader r, Writer w) {
+	Reactor(Selector s, KeyQer r, KeyQer w) {
 		this.s = s;
 		this.r = r;
 		this.w = w;
@@ -30,28 +28,19 @@ class Reactor implements Runnable {
 	}
 
 	void loop() {
+		s.selectedKeys().clear();
+
 		try {
 			s.select();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
+		} catch (IOException ignore) {}
 
-		Iterator<SelectionKey> keys = s.selectedKeys().iterator();
-
-		while (keys.hasNext()) {
-			SelectionKey k = keys.next();
-			keys.remove();
-
-			switch (k.interestOps()) {
-			case SelectionKey.OP_READ:
-				r.q.offer(k);
-				break;
-
-			case SelectionKey.OP_WRITE:
-				r.q.offer(k);
-				break;
+		s.selectedKeys().iterator().forEachRemaining(k -> {
+			if (k.isReadable()) {
+				r.q(k);
+			} else if (k.isWritable()) {
+				w.q(k);
 			}
-		}
+		});
 	}
 
 }
