@@ -17,8 +17,7 @@ class Bouncer implements Runnable {
 	Bouncer(Selector s, SocketAddress la) throws Throwable {
 		this.s = s;
 
-		ssc = ServerSocketChannel.open();
-		ssc.bind(la);
+		ssc = ServerSocketChannel.open().bind(la);
 	}
 
 	@Override
@@ -26,21 +25,16 @@ class Bouncer implements Runnable {
 		while (s.isOpen()) {
 			try {
 				accept();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			} catch (Throwable ignore) {}
 		}
 	}
 
 	void accept() throws Throwable {
-		SocketChannel ac = null;
+		SocketChannel ac;
 		while ((ac = ssc.accept()) != null) {
-			try {
-				SelectionKey rk = ac.register(s, SelectionKey.OP_READ);
-				rk.attach(new Client(rk));
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
+			ac.configureBlocking(false);
+			SelectionKey k = ac.register(s, SelectionKey.OP_READ);
+			k.attach(new Client(k));
 		}
 	}
 
