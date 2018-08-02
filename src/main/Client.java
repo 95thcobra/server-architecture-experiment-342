@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
@@ -10,26 +11,33 @@ import java.nio.channels.SocketChannel;
 class Client {
 
 	SelectionKey k;
-	SocketChannel c;
+	SocketChannel sc;
 	ByteBuffer in, out;
 
-	Client(SelectionKey k) throws Throwable {
+	Client(SelectionKey k) {
 		this.k = k;
 
-		c = (SocketChannel) k.channel();
-		c.configureBlocking(false);
+		sc = (SocketChannel) k.channel();
 
 		in = ByteBuffer.allocateDirect(256);
 		out = ByteBuffer.allocateDirect(256);
 	}
 
-	void read() throws Throwable {
-		int nread = c.read(in);
+	void read() {
+		try {
+			sc.read(in);
+		} catch (IOException ignore) {
+			return;
+		}
 	}
 
-	void flush() throws Throwable {
-		int nwrite = c.write(out);
+	void flush() {
+		int nwrite;
+		try {
+			nwrite = sc.write(out);
+		} catch (IOException ignore) {}
 		out.clear();
+		k.interestOps(SelectionKey.OP_READ);
 	}
 
 }
