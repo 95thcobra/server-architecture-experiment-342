@@ -1,4 +1,4 @@
-package main;
+package server;
 
 import java.net.SocketAddress;
 import java.nio.channels.Selector;
