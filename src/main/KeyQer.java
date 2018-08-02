@@ -27,7 +27,7 @@ class KeyQer implements Runnable {
 				continue;
 			}
 
-			Client c = (Client) k.attachment();
+			NetSesh c = (NetSesh) k.attachment();
 
 			if (k.isReadable()) {
 				c.read();

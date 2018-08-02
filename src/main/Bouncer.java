@@ -34,7 +34,7 @@ class Bouncer implements Runnable {
 		while ((ac = ssc.accept()) != null) {
 			ac.configureBlocking(false);
 			SelectionKey k = ac.register(s, SelectionKey.OP_READ);
-			k.attach(new Client(k));
+			k.attach(new NetSesh(k));
 		}
 	}
 

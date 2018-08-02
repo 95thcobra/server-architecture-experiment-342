@@ -8,13 +8,13 @@ import java.nio.channels.SocketChannel;
 /**
  * @author breaklulz
  */
-class Client {
+class NetSesh {
 
 	SelectionKey k;
 	SocketChannel sc;
 	ByteBuffer in, out;
 
-	Client(SelectionKey k) {
+	NetSesh(SelectionKey k) {
 		this.k = k;
 
 		sc = (SocketChannel) k.channel();
